@@ -17,9 +17,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
+
+from budgettracker.views import DashboardView
 
 # Configure the Swagger UI schema view
 schema_view = get_schema_view(
@@ -41,4 +44,7 @@ urlpatterns = [
     path('budgettracker/', include('budgettracker.urls')),  # Include your app's URLs 
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+     path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+     path('dashboard/', DashboardView.as_view({'get': 'list'}), name='dashboard'),
 ]

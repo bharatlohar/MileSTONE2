@@ -1,11 +1,13 @@
 # budgettracker/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from .views import Dashboard_view, login, profile_view
 from .views import (
     UserViewSet, UserProfileViewSet, InputSaveViewSet, 
     CategoryViewSet, IncomeViewSet, ExpenseViewSet, 
     BudgetViewSet, EMIViewSet, functionname
 )
+from django.contrib.auth import views as auth_views
 
 # Create a router and register the ViewSets
 router = DefaultRouter()
@@ -21,5 +23,10 @@ router.register(r'emis', EMIViewSet)
 # URL patterns
 urlpatterns = [
     path('', functionname, name='home'),  # Basic view to render the homepage
-    path('', include(router.urls)),      # Include all the routes from the router
-]
+    path('', login, name='login'),  
+    path('profile/', profile_view, name='profile'),
+    path('', include(router.urls)),  
+    path('dashboard/', Dashboard_view, name='dashboard'),
+    
+]    # Include all the routes from the router
+
