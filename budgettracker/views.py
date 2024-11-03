@@ -1,16 +1,30 @@
 # budgettracker/views.py
 from urllib import response
 from django.shortcuts import render
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets, status  # Import 'status' here
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.authtoken.views import ObtainAuthToken  # Import ObtainAuthToken
+from rest_framework.authtoken.models import Token  # Import Token model for token management
+from django.contrib.auth import login, logout  # Import login and logout functions
+from django.contrib.auth.decorators import login_required
 from .models import User, UserProfile, InputSave, Category, Income, Expense, Budget, EMI
-from .serializers import (UserSerializer,UserProfileSerializer,InputSaveSerializer,CategorySerializer,IncomeSerializer,ExpenseSerializer,BudgetSerializer,EMISerializer
+from .serializers import (
+    UserSerializer,
+    UserProfileSerializer,
+    InputSaveSerializer,
+    CategorySerializer,
+    IncomeSerializer,
+    ExpenseSerializer,
+    BudgetSerializer,
+    EMISerializer,
+    UserLoginSerializer  # Import UserLoginSerializer
 )
 from django.db.models import Sum, Value
 from django.db.models.functions import Coalesce
-from rest_framework.response import Response
-from django.contrib.auth.decorators import login_required
+
 
 # User ViewSet
 class UserViewSet(viewsets.ModelViewSet):
@@ -98,3 +112,22 @@ def profile_view(request):
 
 def Dashboard_view(request):
     return render(request, 'dashboard.html')
+
+class UserLoginView(APIView):
+    permission_classes = [AllowAny]  # Allow any user to access this view
+
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data
+            login(request, user)  # Log the user in
+            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserLogoutView(APIView):
+    permission_classes = [IsAuthenticated]  # Only authenticated users can log out
+
+    def post(self, request):
+        logout(request)  # Log the user out
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+
+

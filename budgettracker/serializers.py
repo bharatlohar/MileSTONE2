@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, UserProfile, InputSave, Category, Income, Expense, Budget, EMI
+from django.contrib.auth import authenticate
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
@@ -83,3 +84,16 @@ class EMISerializer(serializers.ModelSerializer):
     class Meta:
         model = EMI
         fields = ['id', 'user', 'amount', 'due_date', 'description']
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        username = data.get("username")
+        password = data.get("password")
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise serializers.ValidationError("Invalid login credentials")
+        data["user"] = user
+        return data

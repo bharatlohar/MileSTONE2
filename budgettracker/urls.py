@@ -23,10 +23,10 @@ router.register(r'emis', EMIViewSet)
 # URL patterns
 urlpatterns = [
     path('', functionname, name='home'),  # Basic view to render the homepage
-    path('', login, name='login'),  
-    path('profile/', profile_view, name='profile'),
     path('', include(router.urls)),  
     path('dashboard/', Dashboard_view, name='dashboard'),
+     path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('profile/', profile_view, name='profile'),
     
-]    # Include all the routes from the router
-
+]

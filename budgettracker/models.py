@@ -107,3 +107,5 @@ class EMI(models.Model):
 
     def __str__(self):
         return f"EMI of ${self.amount} due on {self.due_date}"
+
+
