@@ -41,7 +41,6 @@ INSTALLED_APPS = [
      'budgettracker',
       'django_filters',
       'rest_framework',
-      'rest_framework.authtoken',
 ]
 
 SWAGGER_SETTINGS = {
