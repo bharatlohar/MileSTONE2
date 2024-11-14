@@ -11,9 +11,12 @@
     <div style="text-align: center;">  <!-- Use a div for centering -->
         <h2>Login</h2>
     </div>
-    <form method="post">
+    <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- Renders the form fields -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
         <button type="submit">Login</button>
     </form>
 </body>

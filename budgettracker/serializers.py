@@ -86,14 +86,17 @@ class EMISerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'amount', 'due_date', 'description']
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
 
-    def validate(self, data):
-        username = data.get("username")
-        password = data.get("password")
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        # Authenticate the user
         user = authenticate(username=username, password=password)
         if user is None:
-            raise serializers.ValidationError("Invalid login credentials")
-        data["user"] = user
-        return data
+            raise serializers.ValidationError("Invalid username or password")
+
+        attrs['user'] = user  # Store the authenticated user
+        return attrs
